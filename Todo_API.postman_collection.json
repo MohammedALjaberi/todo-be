@@ -1,0 +1,329 @@
+{
+  "info": {
+    "name": "Todo API",
+    "description": "Complete CRUD API for Todo tasks with Zod validation",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "Create Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Complete project documentation\",\n  \"description\": \"Write comprehensive API docs\",\n  \"status\": \"TODO\",\n  \"startDate\": \"2024-10-19T10:00:00Z\",\n  \"endDate\": \"2024-10-21T18:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/tasks",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "tasks"]
+            },
+            "description": "Create a new task. Only title is required."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/tasks",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "tasks"]
+            },
+            "description": "Get all tasks without filters"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Tasks by Status (TODO)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/tasks?status=TODO",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "tasks"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "TODO",
+                  "description": "Filter by status: TODO, IN_PROGRESS, or DONE"
+                }
+              ]
+            },
+            "description": "Get tasks filtered by TODO status"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Tasks by Status (IN_PROGRESS)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/tasks?status=IN_PROGRESS",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "tasks"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "IN_PROGRESS"
+                }
+              ]
+            },
+            "description": "Get tasks filtered by IN_PROGRESS status"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Tasks Sorted by Title",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/tasks?sortBy=title&order=asc",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "tasks"],
+              "query": [
+                {
+                  "key": "sortBy",
+                  "value": "title",
+                  "description": "Sort by: title, status, createdAt, updatedAt, startDate, endDate"
+                },
+                {
+                  "key": "order",
+                  "value": "asc",
+                  "description": "Order: asc or desc"
+                }
+              ]
+            },
+            "description": "Get tasks sorted by title in ascending order"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Task by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/tasks/{{taskId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "tasks", "{{taskId}}"]
+            },
+            "description": "Get a specific task by ID. Replace {{taskId}} with actual task ID from create response."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Task",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"IN_PROGRESS\",\n  \"description\": \"Updated description - working on it now\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/tasks/{{taskId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "tasks", "{{taskId}}"]
+            },
+            "description": "Update a task. All fields are optional. Replace {{taskId}} with actual task ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Task to DONE",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"DONE\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/tasks/{{taskId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "tasks", "{{taskId}}"]
+            },
+            "description": "Mark task as complete"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/tasks/{{taskId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "tasks", "{{taskId}}"]
+            },
+            "description": "Delete a task by ID. Replace {{taskId}} with actual task ID."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Validation Tests",
+      "item": [
+        {
+          "name": "Create Task - Missing Title (Should Fail)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"This should fail - no title provided\",\n  \"status\": \"TODO\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/tasks",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "tasks"]
+            },
+            "description": "Test validation - should return 400 error for missing title"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Task - Invalid Status (Should Fail)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Test task\",\n  \"status\": \"INVALID_STATUS\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/tasks",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "tasks"]
+            },
+            "description": "Test validation - should return 400 error for invalid status"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Task - End Date Before Start Date (Should Fail)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Test task\",\n  \"startDate\": \"2024-10-21T10:00:00Z\",\n  \"endDate\": \"2024-10-19T10:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/tasks",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "tasks"]
+            },
+            "description": "Test validation - should return 400 error when end date is before start date"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Task - Invalid ID Format (Should Fail)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/tasks/invalid-id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "tasks", "invalid-id"]
+            },
+            "description": "Test validation - should return 400 error for invalid MongoDB ObjectId format"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "API Info",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": [""]
+        },
+        "description": "Get API information and available endpoints"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "taskId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
