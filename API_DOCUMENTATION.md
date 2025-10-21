@@ -79,12 +79,13 @@ Create a new task.
 
 ### 2. Get All Tasks
 
-Retrieve all tasks with optional filtering and sorting.
+Retrieve all tasks with optional filtering, searching, and sorting.
 
 **Endpoint:** `GET /api/tasks`
 
 **Query Parameters:**
 
+- `search` (optional) - Search term to find in task titles (case-insensitive)
 - `status` (optional) - Filter by status: `TODO`, `IN_PROGRESS`, or `DONE`
 - `sortBy` (optional) - Sort field (default: `createdAt`)
 - `order` (optional) - Sort order: `asc` or `desc` (default: `desc`)
@@ -94,6 +95,8 @@ Retrieve all tasks with optional filtering and sorting.
 ```
 GET /api/tasks
 GET /api/tasks?status=TODO
+GET /api/tasks?search=project
+GET /api/tasks?search=documentation&status=TODO
 GET /api/tasks?status=IN_PROGRESS&sortBy=title&order=asc
 ```
 
@@ -265,6 +268,57 @@ DELETE /api/tasks/6530f3a2b8c9d4e5f6a7b8c9
   "success": false,
   "message": "Task not found"
 }
+```
+
+---
+
+## Search Feature
+
+### Search Tasks
+
+Search for tasks by title using the `search` query parameter.
+
+**Endpoint:** `GET /api/tasks?search={searchTerm}`
+
+**Examples:**
+
+```bash
+# Search for tasks containing "project"
+GET /api/tasks?search=project
+
+# Search combined with status filter
+GET /api/tasks?search=API&status=TODO
+
+# Search with sorting
+GET /api/tasks?search=documentation&sortBy=createdAt&order=desc
+```
+
+**Search Behavior:**
+
+- Case-insensitive search
+- Searches in task titles
+- Partial matching (finds tasks containing the search term)
+- Can be combined with status filter and sorting
+
+**Example with cURL:**
+
+```bash
+curl "http://localhost:3000/api/tasks?search=project"
+```
+
+**Example from Frontend:**
+
+```javascript
+// Using fetch
+const response = await fetch("http://localhost:3000/api/tasks?search=project");
+const data = await response.json();
+
+// Using URLSearchParams
+const params = new URLSearchParams({
+  search: "documentation",
+  status: "TODO",
+});
+fetch(`http://localhost:3000/api/tasks?${params}`);
 ```
 
 ---
