@@ -55,6 +55,7 @@ export const updateTaskSchema = z
 // Query parameters schema for getting tasks
 export const getTasksQuerySchema = z.object({
   status: TaskStatusEnum.optional(),
+  search: z.string().optional(),
   sortBy: z
     .enum(["title", "status", "createdAt", "updatedAt", "startDate", "endDate"])
     .optional()

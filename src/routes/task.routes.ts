@@ -51,12 +51,19 @@ router.get(
   validate({ query: getTasksQuerySchema }),
   async (req: Request, res: Response) => {
     try {
-      const { status, sortBy, order } = req.query as any;
+      const { status, search, sortBy, order } = req.query as any;
 
       // Build filter object
       const where: any = {};
+
+      // Filter by status
       if (status) {
         where.status = status;
+      }
+
+      // Search in title
+      if (search) {
+        where.OR = [{ title: { contains: search, mode: "insensitive" } }];
       }
 
       // Build sort object
@@ -72,6 +79,7 @@ router.get(
         success: true,
         message: "Tasks retrieved successfully",
         data: tasks,
+        count: tasks.length,
       });
     } catch (error: any) {
       res.status(500).json({
