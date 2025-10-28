@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "vercel-build": "prisma generate",
-    "postinstall": "prisma generate",
-    "build": "prisma generate",
+    "vercel-build": "npx prisma generate",
+    "postinstall": "npx prisma generate",
+    "build": "npx prisma generate",
     "start": "ts-node index.ts",
     "dev": "ts-node-dev --respawn --transpile-only index.ts",
     "test:tasks": "ts-node test-tasks.ts",
-    "generate": "prisma generate"
+    "generate": "npx prisma generate"
   },
   "keywords": [],
   "author": "",
