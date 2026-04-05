@@ -38,12 +38,11 @@ async function testTaskModel() {
     console.log();
 
     // 4. Update a task status
-    console.log("4. Updating task status to COMPLETED...");
+    console.log("4. Updating task status to DONE...");
     const updatedTask = await prisma.task.update({
       where: { id: newTask.id },
       data: {
-        status: "COMPLETED",
-        completedAt: new Date(),
+        status: "DONE",
       },
     });
     console.log("✅ Updated task:", updatedTask);

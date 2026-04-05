@@ -1,28 +1,20 @@
 import dotenv from "dotenv";
 import { PrismaClient } from "./generated/prisma";
 
-// Load environment variables
 dotenv.config();
 
 const prisma = new PrismaClient({
   log: ["error", "warn", "info"],
-  datasources: {
-    db: {
-      url: process.env.NEXT_PUBLIC_DATABASE_URL,
-    },
-  },
 });
 
 async function main() {
   try {
-    console.log("🔍 Testing MongoDB Connection...\n");
+    console.log("Testing MongoDB Connection...\n");
 
-    // Test connection
     await prisma.$connect();
-    console.log("✅ Successfully connected to MongoDB!\n");
+    console.log("Successfully connected to MongoDB!\n");
 
-    // Create a sample task
-    console.log("📝 Creating a sample task...");
+    console.log("Creating a sample task...");
     const newTask = await prisma.task.create({
       data: {
         title: "Test Task from server.ts",
@@ -30,21 +22,21 @@ async function main() {
         status: "TODO",
       },
     });
-    console.log("✅ Created new task:", newTask);
+    console.log("Created new task:", newTask);
 
-    // Fetch all tasks
-    console.log("\n📋 Fetching all tasks...");
+    console.log("\nFetching all tasks...");
     const allTasks = await prisma.task.findMany();
-    console.log(`✅ Found ${allTasks.length} tasks:`, allTasks);
+    console.log(`Found ${allTasks.length} tasks:`, allTasks);
 
-    console.log("\n✅ All operations completed successfully!");
-  } catch (error: any) {
-    console.error("\n❌ Error occurred:");
-    console.error("Message:", error.message);
-    console.error("Code:", error.code);
+    console.log("\nAll operations completed successfully!");
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error ? error.message : "Unknown error occurred";
+    console.error("\nError occurred:");
+    console.error("Message:", message);
 
-    if (error.message.includes("Server selection timeout")) {
-      console.error("\n🔧 Connection Issue Detected!");
+    if (message.includes("Server selection timeout")) {
+      console.error("\nConnection Issue Detected!");
       console.error("Please check:");
       console.error("1. MongoDB Atlas Network Access - whitelist your IP");
       console.error("2. Cluster is running (not paused)");
@@ -55,7 +47,7 @@ async function main() {
     }
   } finally {
     await prisma.$disconnect();
-    console.log("\n🔌 Disconnected from database.");
+    console.log("\nDisconnected from database.");
   }
 }
 

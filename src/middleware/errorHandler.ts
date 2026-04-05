@@ -1,6 +1,11 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
-export const errorHandler = (err: any, res: Response) => {
+export const errorHandler = (
+  err: Error & { statusCode?: number },
+  _req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
   console.error("Error:", err);
 
   const statusCode = err.statusCode || 500;
@@ -13,9 +18,9 @@ export const errorHandler = (err: any, res: Response) => {
   });
 };
 
-export const notFoundHandler = (req: Request, res: Response) => {
+export const notFoundHandler = (_req: Request, res: Response) => {
   res.status(404).json({
     success: false,
-    message: `Route ${req.originalUrl} not found`,
+    message: `Route ${_req.originalUrl} not found`,
   });
 };

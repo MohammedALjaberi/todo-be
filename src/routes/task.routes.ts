@@ -7,22 +7,26 @@ import {
   updateTaskSchema,
   getTasksQuerySchema,
   objectIdSchema,
+  type GetTasksQuery,
+  type CreateTaskInput,
+  type UpdateTaskInput,
 } from "../schemas/task.schema";
+import { Prisma } from "../../generated/prisma";
 
 const router = Router();
 
-// Create a new task
 router.post(
   "/",
   validate({ body: createTaskSchema }),
   async (req: Request, res: Response) => {
     try {
-      const { title, description, status, startDate, endDate } = req.body;
+      const { title, description, status, startDate, endDate } =
+        req.body as CreateTaskInput;
 
       const task = await prisma.task.create({
         data: {
           title,
-          description: description || null,
+          description: description ?? null,
           status,
           ...(startDate && { startDate: new Date(startDate) }),
           ...(endDate && { endDate: new Date(endDate) }),
@@ -34,41 +38,39 @@ router.post(
         message: "Task created successfully",
         data: task,
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error creating task:", error);
       res.status(500).json({
         success: false,
         message: "Failed to create task",
-        error: error.message,
       });
     }
   }
 );
 
-// Get all tasks
 router.get(
   "/",
   validate({ query: getTasksQuerySchema }),
   async (req: Request, res: Response) => {
     try {
-      const { status, search, sortBy, order } = req.query as any;
+      const { status, search, sortBy, order } = req.query as unknown as GetTasksQuery;
 
-      // Build filter object
-      const where: any = {};
+      const where: Prisma.TaskWhereInput = {};
 
-      // Filter by status
       if (status) {
         where.status = status;
       }
 
-      // Search in title
       if (search) {
-        where.OR = [{ title: { contains: search, mode: "insensitive" } }];
+        where.OR = [
+          { title: { contains: search, mode: "insensitive" } },
+          { description: { contains: search, mode: "insensitive" } },
+        ];
       }
 
-      // Build sort object
-      const orderBy: any = {};
-      orderBy[sortBy] = order;
+      const orderBy: Prisma.TaskOrderByWithRelationInput = {
+        [sortBy]: order,
+      };
 
       const tasks = await prisma.task.findMany({
         where,
@@ -81,17 +83,16 @@ router.get(
         data: tasks,
         count: tasks.length,
       });
-    } catch (error: any) {
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
       res.status(500).json({
         success: false,
         message: "Failed to fetch tasks",
-        error: error.message,
       });
     }
   }
 );
 
-// Get a single task by ID
 router.get(
   "/:id",
   validate({ params: z.object({ id: objectIdSchema }) }),
@@ -115,17 +116,16 @@ router.get(
         message: "Task retrieved successfully",
         data: task,
       });
-    } catch (error: any) {
+    } catch (error) {
+      console.error("Error fetching task:", error);
       res.status(500).json({
         success: false,
         message: "Failed to fetch task",
-        error: error.message,
       });
     }
   }
 );
 
-// Update a task
 router.put(
   "/:id",
   validate({
@@ -135,9 +135,9 @@ router.put(
   async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const { title, description, status, startDate, endDate } = req.body;
+      const { title, description, status, startDate, endDate } =
+        req.body as UpdateTaskInput;
 
-      // Check if task exists
       const existingTask = await prisma.task.findUnique({
         where: { id },
       });
@@ -149,16 +149,14 @@ router.put(
         });
       }
 
-      // Build update data object
-      const updateData: any = {};
+      const updateData: Prisma.TaskUpdateInput = {};
       if (title !== undefined) updateData.title = title;
-      if (description !== undefined)
-        updateData.description = description || null;
+      if (description !== undefined) updateData.description = description ?? null;
       if (status !== undefined) updateData.status = status;
-      if (startDate !== undefined && startDate !== null)
-        updateData.startDate = new Date(startDate);
-      if (endDate !== undefined && endDate !== null)
-        updateData.endDate = new Date(endDate);
+      if (startDate !== undefined)
+        updateData.startDate = startDate ? new Date(startDate) : null;
+      if (endDate !== undefined)
+        updateData.endDate = endDate ? new Date(endDate) : null;
 
       const updatedTask = await prisma.task.update({
         where: { id },
@@ -170,17 +168,16 @@ router.put(
         message: "Task updated successfully",
         data: updatedTask,
       });
-    } catch (error: any) {
+    } catch (error) {
+      console.error("Error updating task:", error);
       res.status(500).json({
         success: false,
         message: "Failed to update task",
-        error: error.message,
       });
     }
   }
 );
 
-// Delete a task
 router.delete(
   "/:id",
   validate({ params: z.object({ id: objectIdSchema }) }),
@@ -188,7 +185,6 @@ router.delete(
     try {
       const { id } = req.params;
 
-      // Check if task exists
       const existingTask = await prisma.task.findUnique({
         where: { id },
       });
@@ -209,11 +205,11 @@ router.delete(
         message: "Task deleted successfully",
         data: existingTask,
       });
-    } catch (error: any) {
+    } catch (error) {
+      console.error("Error deleting task:", error);
       res.status(500).json({
         success: false,
         message: "Failed to delete task",
-        error: error.message,
       });
     }
   }

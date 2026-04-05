@@ -5,7 +5,7 @@
 Make sure your `.env` file has the correct connection string with the database name:
 
 ```env
-DATABASE_URL="mongodb+srv://mohdhadi:736544605@todocluster.mvwjhoc.mongodb.net/tododb?retryWrites=true&w=majority&appName=TodoCluster"
+DATABASE_URL="mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<database>?retryWrites=true&w=majority&appName=<appName>"
 ```
 
 ## Step 2: Whitelist Your IP in MongoDB Atlas
